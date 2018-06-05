@@ -1,0 +1,133 @@
+<html>
+
+<head>
+  <title>Books DB API Frontend</title>
+</head>
+
+<body>
+  <div class="container">
+
+      <div id="bookAdd">
+          <h2>Add a new Book</h2>
+         
+              <h3>Type the author:</h3>
+              <input type="text" name="author" id="author">
+              <h3>Type the title:</h3>
+              <input type="text" name="title" id="title">
+              <h3>Select the genre:</h3>
+              <select name="genre" id="genre">
+                <option value="Science fiction">Science fiction</option>
+                <option value="Satire">Satire</option>
+                <option value="Drama">Drama</option>
+                <option value="Action and Adventure">Action and Adventure</option>
+                <option value="Romance">Romance</option>
+                <option value="Mystery">Mystery</option>
+                <option value="Horror">Horror</option>
+              </select>
+              <h3>Type the price:</h3>
+              <input type="text" name="price" id="price">
+              
+              <input type="button" id="submitBook" value="Submit" class="button" onclick="addBook()">
+           
+            <br>
+    
+        </div>
+
+
+    <div id="bookByTitle">
+
+      <h2>Find book by title</h2>   
+      <input type="text" id="findBook" />
+      <input type="button" id="btn-findBook" value="Click ME!" class="button" onclick="findBook()"/>
+
+    </div>
+  </div>
+
+  <script>
+
+    function findBook(){
+        document.getElementById("btn-findBook").addEventListener('click', function () {
+
+          var userInput = document.getElementById('findBook').value;
+          console.log(userInput);
+          let xhttp = new XMLHttpRequest();
+          let url = "http://localhost:3000/books/" + userInput;
+          xhttp.open("GET", url, true);
+          xhttp.onreadystatechange = function () {
+
+            if (this.readyState == 4 && this.status == 200) {
+              let results = JSON.parse(xhttp.responseText);
+              let divEl = document.getElementById('bookByTitle');
+              for (result of results) {
+                console.log(result);
+                divEl.innerHTML += '<ul><li>' + result.title + '</li><li>' + result.author + '</li><li>' + result.genre + '</li><li>' + result.price + '</li></ul>';
+              }
+            }
+          };
+          xhttp.send();
+        })
+        function loadXMLDoc() {
+          var xhttp = new XMLHttpRequest();
+
+
+          xhttp.send();
+        }
+  }
+
+function addBook(){
+
+				var author = document.getElementById('author').value;
+				var title = document.getElementById('title').value;
+				var genre = document.getElementById('genre').value;
+				var price = document.getElementById('price').value;
+        var response;
+        console.log(author, title, genre, price);
+				var url ="/books/"+author +"/"+title+"/"+genre +"/"+price;
+				
+				if(author=='' || title==''  || price==''){		 
+					alert("You must fill in the form.");
+					return;
+				}
+				if(isNaN((price)) ){					
+					alert("price must be of numeric value.");
+					return;
+				}
+				if(author.length > 25 || title.length>40 || author == title){
+					alert("Either the author's or the title's size is bigger than it should be, or the author and title inputs are the same");
+					//document.getElementById("addForm").reset();//clear form
+					return;
+				}
+				// author = author.replace(/^\s+|\s+$/g,'');//it looks like the select statement in add.php does not work properly when spaces are inserted in the form
+				// title = title.replace(/^\s+|\s+$/g,'');//The replace() method searches a string for a specified value, or a regular expression, and returns a new string where the specified values are replaced. s matches a single white space character The g modifier is used to perform a global match
+				
+				var book = {'author': author, 'title': title, 'genre': genre, 'price': price};
+        book = JSON.stringify(book);
+				
+				//code to send form
+				var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST", url, true);
+        xmlhttp.send(book);
+			
+				
+				xmlhttp.onreadystatechange = function() {
+	            	if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						response = JSON.parse(this.responseText);
+	            		document.getElementById("bookAdd").innerHTML = response.status;
+						//document.getElementById("addForm").reset();//clear form
+					}
+              };
+            
+			}
+
+  </script>
+</body>
+
+
+
+
+
+
+
+
+
+</html>
