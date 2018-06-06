@@ -54,44 +54,14 @@ app.post('/books/:author/:title/:genre/:price', function (req, res) {
     var genre = req.params.genre;
     var price = req.params.price;
     var values = [author,title,genre, price];
-    console.log(author+title+genre+price);
-    let sql = "INSERT INTO books (author,title,genre,price) VALUES ('Victor Hugo', 'Les Miserables', 'Mystery',30)";
-    conn.query(sql, req.params.values, function (err, result, fields) {
+    console.log(author + title+ genre + price);
+    let sql = "INSERT INTO books (author,title,genre,price) VALUES(?,?,?,?)";
+    conn.query(sql, [author, title,genre, price], function (err, result, fields) {
         if (err) throw err;
         res.json(result);
         console.log(result);
 
     })
 })
-
-// app.post('/books/',urlencodedParser, function (req, res) {
-
-//     //let values ={author :author, title:title, genre:genre, price:price};
-//     let sql = "INSERT INTO books (author, title, genre, price) VALUES ?";
-//     conn.query(sql, req.body, function (err, result, fields) {
-//         if (err) throw err;
-//         res.end(JSON.stringify(req.body));
-
-//     })
-// })
-
-
-// app.post('/books/', function(req, res){
-
-//     var author=req.body.author;
-//     var title=req.body.title;
-//     var genre=req.body.genre;
-//     var price=req.body.price;
-//     values= [author, title, genre, price];
-
-//     connection.query("INSERT INTO books SET ?", values.toString(), function(err, result){
-//         if(err) throw err;
-
-//         res.end(JSON.stringify(req.body));
-//         console.log("1 record inserted");
-//     });
-
-// });
-
 
 app.listen(3000);
