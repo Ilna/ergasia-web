@@ -82,7 +82,7 @@ function addBook(){
 				var price = document.getElementById('price').value;
         var response;
         console.log(author, title, genre, price);
-				var url =window.location + "books/" + author;
+				var url =window.location + "books/" + author + "/"  + title + "/" + genre + "/" + price;
 				
 				if(author=='' || title==''  || price==''){		 
 					alert("You must fill in the form.");

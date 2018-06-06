@@ -47,13 +47,15 @@ app.get('/books/:title', function (req, res) {
 
 })
 
-app.post('/books/:author', function (req, res) {
+app.post('/books/:author/:title/:genre/:price', function (req, res) {
 
-    var author=req.params.author;
-
-    
-    console.log(author);
-    let sql = "INSERT INTO books (author,title,genre,price) VALUES ('chris','info','scifi',22)";
+    var author = req.params.author;
+    var title = req.params.title;
+    var genre = req.params.genre;
+    var price = req.params.price;
+    var values = [author,title,genre, price];
+    console.log(author+title+genre+price);
+    let sql = "INSERT INTO books (author,title,genre,price) VALUES ('Victor Hugo', 'Les Miserables', 'Mystery',30)";
     conn.query(sql, req.params.values, function (err, result, fields) {
         if (err) throw err;
         res.json(result);
