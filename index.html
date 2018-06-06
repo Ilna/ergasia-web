@@ -82,7 +82,7 @@ function addBook(){
 				var price = document.getElementById('price').value;
         var response;
         console.log(author, title, genre, price);
-				var url ="/books/"+author +"/"+title+"/"+genre +"/"+price;
+				var url =window.location + "books/" + author;
 				
 				if(author=='' || title==''  || price==''){		 
 					alert("You must fill in the form.");
@@ -94,26 +94,24 @@ function addBook(){
 				}
 				if(author.length > 25 || title.length>40 || author == title){
 					alert("Either the author's or the title's size is bigger than it should be, or the author and title inputs are the same");
-					//document.getElementById("addForm").reset();//clear form
+
 					return;
-				}
-				// author = author.replace(/^\s+|\s+$/g,'');//it looks like the select statement in add.php does not work properly when spaces are inserted in the form
-				// title = title.replace(/^\s+|\s+$/g,'');//The replace() method searches a string for a specified value, or a regular expression, and returns a new string where the specified values are replaced. s matches a single white space character The g modifier is used to perform a global match
+        }
+        
+				 var book = {'author': author, 'title': title, 'genre': genre, 'price': price};
+         let newBook = JSON.stringify(book);
 				
-				var book = {'author': author, 'title': title, 'genre': genre, 'price': price};
-        book = JSON.stringify(book);
-				
-				//code to send form
+			
 				var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("POST", url, true);
-        xmlhttp.send(book);
+        xmlhttp.send(newBook);
 			
 				
 				xmlhttp.onreadystatechange = function() {
 	            	if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 						response = JSON.parse(this.responseText);
 	            		document.getElementById("bookAdd").innerHTML = response.status;
-						//document.getElementById("addForm").reset();//clear form
+						
 					}
               };
             

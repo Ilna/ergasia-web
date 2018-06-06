@@ -4,10 +4,15 @@ const mysql = require('mysql');
 const express = require('express');
 const bodyParser = require('body-parser');
 
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
 
 const app = express();
 app.use(express.static('./'));
+
+app.use(bodyParser.urlencoded({extended: true}));
+//app.use(express.json());
+//app.use(express.urlencoded());
+//app.use(app.router);
 
 const conn = mysql.createConnection({
     host: '35.204.206.195',
@@ -42,28 +47,49 @@ app.get('/books/:title', function (req, res) {
 
 })
 
-// app.post('/books/:author/:title/:genre/:price', function (req, res) {
+app.post('/books/:author', function (req, res) {
 
-//     let values =[author, title, genre, price];
+    var author=req.params.author;
+
+    
+    console.log(author);
+    let sql = "INSERT INTO books (author,title,genre,price) VALUES ('chris','info','scifi',22)";
+    conn.query(sql, req.params.values, function (err, result, fields) {
+        if (err) throw err;
+        res.json(result);
+        console.log(result);
+
+    })
+})
+
+// app.post('/books/',urlencodedParser, function (req, res) {
+
+//     //let values ={author :author, title:title, genre:genre, price:price};
 //     let sql = "INSERT INTO books (author, title, genre, price) VALUES ?";
-//     conn.query(sql, req.params.values, function (err, result, fields) {
+//     conn.query(sql, req.body, function (err, result, fields) {
 //         if (err) throw err;
-//         res.json(result);
-//         console.log(result);
+//         res.end(JSON.stringify(req.body));
 
 //     })
 // })
 
-app.post('/books/',urlencodedParser, function (req, res) {
 
-    //let values ={author :author, title:title, genre:genre, price:price};
-    let sql = "INSERT INTO books (author, title, genre, price) VALUES ?";
-    conn.query(sql, req.body, function (err, result, fields) {
-        if (err) throw err;
-        res.end(JSON.stringify(req.body));
+// app.post('/books/', function(req, res){
 
-    })
-})
+//     var author=req.body.author;
+//     var title=req.body.title;
+//     var genre=req.body.genre;
+//     var price=req.body.price;
+//     values= [author, title, genre, price];
+
+//     connection.query("INSERT INTO books SET ?", values.toString(), function(err, result){
+//         if(err) throw err;
+
+//         res.end(JSON.stringify(req.body));
+//         console.log("1 record inserted");
+//     });
+
+// });
 
 
 app.listen(3000);
