@@ -54,11 +54,20 @@ app.post('/books/:author/:title/:genre/:price', function (req, res) {
     let title = req.params.title;
     let genre = req.params.genre;
     let price = req.params.price;
-    let values = [author,title,genre, price];
-
 
     let sql = "INSERT INTO books (author,title,genre,price) VALUES(?,?,?,?)";
     conn.query(sql, [author, title,genre, price], function (err, result, fields) {
+        if (err) throw err;
+        res.json(result);
+
+    })
+})
+
+app.post('/books/:title', function (req, res) {
+
+
+    let sql = "DELETE FROM books WHERE title=?";
+    conn.query(sql, [ req.params.title], function (err, result, fields) {
         if (err) throw err;
         res.json(result);
 
