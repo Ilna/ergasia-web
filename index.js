@@ -38,8 +38,9 @@ app.get('/books', function (req, res) {
 
 app.get('/books/:title', function (req, res) {
 
-    let sql = "SELECT * FROM books WHERE title=?";
-    conn.query(sql, [req.params.title], function (err, result, fields) {
+    let title = req.params.title;
+
+    conn.query("SELECT * FROM books WHERE title" + " like '%" + req.params.title + "%'", function (err, result, fields) {
         if (err) throw err;
         res.json(result);
         console.log(result);
@@ -49,17 +50,17 @@ app.get('/books/:title', function (req, res) {
 
 app.post('/books/:author/:title/:genre/:price', function (req, res) {
 
-    var author = req.params.author;
-    var title = req.params.title;
-    var genre = req.params.genre;
-    var price = req.params.price;
-    var values = [author,title,genre, price];
-    console.log(author + title+ genre + price);
+    let author = req.params.author;
+    let title = req.params.title;
+    let genre = req.params.genre;
+    let price = req.params.price;
+    let values = [author,title,genre, price];
+
+
     let sql = "INSERT INTO books (author,title,genre,price) VALUES(?,?,?,?)";
     conn.query(sql, [author, title,genre, price], function (err, result, fields) {
         if (err) throw err;
         res.json(result);
-        console.log(result);
 
     })
 })
