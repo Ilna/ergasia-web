@@ -31,6 +31,14 @@
       text-align: center;
     }
 
+     .column_1 , .column_2,.column_3,.column_4{
+      float: left;
+        width: 23%;
+        padding: 10px;
+        height: 100%; 
+
+     }
+
     table {
 
       font-family: arial, sans-serif;
@@ -58,10 +66,8 @@
 
   <div class="container">
     <h1 id="h1">Welcome to the Book DB handler!</h1>
-    <input type="button" id="addBookel" value="Add Book" class="button" onclick="showAddForm()" />
     <br>
-    <br>
-    <form id="addBookForm" style="display: none">
+    <div class="column_1">
       <div id="bookAdd">
         <h2>Add a new Book</h2>
 
@@ -82,80 +88,71 @@
         <h3>Type the price:</h3>
         <input type="text" name="price" id="price">
         <br>
+       
         <br>
-
         <input type="button" id="submitBook" value="Submit New Book" class="button" onclick="addBook()">
 
         <br>
-        <br>
-        <input type="button" id="bookBack" value="Back" class="button" onclick="backToMain()" >
-        <br>
         <div id="bookAddResult"></div>
       </div>
-    </form>
+    <br>
+    <br>
+  </div>
 
-    <input type="button" id="findBookel" value="Find Book" class="button" onclick="showFindForm()" >
-    <br>
-    <br>
-    <form id="findBookForm" style="display: none">
+  <div class="column_2">
       <div id="bookByTitle">
         <h2>Find book by title</h2>
         <input type="text" id="findBook" />
-        <input type="button" id="btn-findBook" value="Find Book" class="button" onclick="findBoook()" >
+        <input type="button" id="btn-findBook" value="Find Book" class="button" onmouseover="findBoook()" >
         <br>
-        <br>
-        <input type="button" id="bookBack" value="Back" class="button" onclick="backToMain()" >
         <br>
         <div id="showResults"></div>
 
       </div>
-    </form>
-    <input type="button" id="showBooks-btn1" value="Show All Books" class="button" onclick="showAllBooks1()" ><br><br>
-    <form id="showBookForm" style="display: none">
-
-      <input type="button" id="showBooks-btn" value="Show All Books" class="button" onclick="showAllBooks()">
-      <input type="button" id="bookBack" value="Back" class="button" onclick="backToMain()" />
+    </div>
+    
+    <div class="column_3">
+        <div id="deleteByTitle">
+            <h2>Delete book by title</h2>
+            <input type="text" id="deleteBook" />
+            <input type="button" id="btn-deleteBook" value="Delete Book" class="button" onmouseover="deleteBoook()" />
+            <br>
+            <br>
+            
+            <br>
+            <div id="showResultsDelete"></div>
+    
+          </div>
+    </div>
+          <div class="column_4">
+      <h2>Show all books :</h2>
+      <input type="button" id="showBooks-btn" value="Show All Books" class="button" onmouseover="showAllBooks()">
       <br>
-      <h2>Table of books :</h2>
       <br>
       <div id="showBooks"></div>
       <br>
-    </form>
-    <input type="button" id="btn-deleteBook" value="Delete Book" class="button" onclick="showdeleteBoookForm()" />
-    <form id="deleteBookForm" style="display: none">
-        <div id="deleteByTitle">
-          <h2>Delete book by title</h2>
-          <input type="text" id="deleteBook" />
-          <input type="button" id="btn-deleteBook" value="Delete Book" class="button" onclick="deleteBoook()" />
-          <br>
-          <br>
-          <input type="button" id="bookBack" value="Back" class="button" onclick="backToMain()" />
-          <br>
-          <div id="showResults"></div>
   
-        </div>
-      </form>
+    </div>
   </div>
 
   <script>
 
 
     function deleteBoook() {
-      document.getElementById("btn-delteBook").addEventListener('click', function () {
+      document.getElementById("btn-deleteBook").addEventListener('click', function () {
         var userInput = document.getElementById('deleteBook').value;
-        console.log(userInput);
+  
         let xhttp = new XMLHttpRequest();
+        let sendTitle  = JSON.stringify(userInput);
         let url = "http://localhost:3000/books/" + userInput;
-        xhttp.open("GET", url, true);
+        xhttp.open("POST", url, true);
+        xhttp.send(sendTitle);
         xhttp.onreadystatechange = function () {
+          let divEl = document.getElementById('showResultsDelete');
           if (this.readyState == 4 && this.status == 200) {
-            let results = JSON.parse(xhttp.responseText);
-            let divEl = document.getElementById('bookByTitle');
-            for (result of results) {
-              console.log(result);
-              divEl.innerHTML += '<ul><li>' + result.title + '</li><li>' + result.author + '</li><li>' + result.genre + '</li><li>' + result.price + '</li></ul>';
-            }
-          }
+            let result = JSON.parse(xhttp.responseText);
+            divEl.innerHTML ='<h3><b><em>If the book with title <h3>'+ userInput+'</h3> exists is deleted....You can check by pressing the All books button.</b></em></h3>';
+        }
         };
         xhttp.send();
       })
@@ -172,15 +169,13 @@
             let results = JSON.parse(xhttp.responseText);
             let divEl = document.getElementById('showBooks');
             let count = 0;
-            //let table = "<table ><tr><th  bgcolor='white'>Author</th><th bgcolor='white'>Title</th><th bgcolor='white'>Genre</th><th bgcolor='white'>Price</th></tr>";
             for (result of results) {
               count++;
-              console.log(result);
+             
               divEl.innerHTML += '<h3>book : '+count+'</h3><ul><li>Titlie : ' + result.title + '</li><li>Author : ' + result.author + '</li><li>Genre : ' + result.genre + '</li><li>Price : ' + result.price + '</li></ul>';
-              //table += '<table><tr><th>' + result.author + '</th><th>' + result.title + '</th><th>' + result.genre + '</th><th>' + result.price + '</th></tr>';
+             
             }
-            table += "</table>";
-            //divEl.innerHTML = table;
+           
           }
         };
         xhttp.send();
@@ -190,26 +185,46 @@
     function findBoook() {
       document.getElementById("btn-findBook").addEventListener('click', function () {
         var userInput = document.getElementById('findBook').value;
-        console.log(userInput);
+        
         let xhttp = new XMLHttpRequest();
         let url = "http://localhost:3000/books/" + userInput;
         xhttp.open("GET", url, true);
+        xhttp.send();
         xhttp.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
             let results = JSON.parse(xhttp.responseText);
-            let divEl = document.getElementById('bookByTitle');
+            let divEl = document.getElementById('showResults');
+            let count =0;
+            if(divEl.textContent = ''){
             if(results.length == 0){
-              divEl.innerHTML ='<h3><b><em>No book with title "'+ userInput+'" exists!</h3></b></em>';
+              divEl.innerHTML ='<h3><b><em>No book with title <h3>'+ userInput+'</h3> exists!</h3></b></em>';
             }else{
-            
+              
             for (result of results) {
-              console.log(result);
-              divEl.innerHTML += '<ul><li>Title : ' + result.title + '</li><li>Author : ' + result.author + '</li><li>Genre : ' + result.genre + '</li><li>Price : ' + result.price + '</li></ul>';
-            }
+              count++;
+            
+              
+            divEl.innerHTML += '<h3>result : '+count+'</h3><ul><li>Titlie : ' + result.title + '</li><li>Author : ' + result.author + '</li><li>Genre : ' + result.genre + '</li><li>Price : ' + result.price + '</li></ul>';
           }
+        }  
+          }else{
+              divEl.textContent = ''
+              if(results.length == 0){
+              divEl.innerHTML ='<h3><b><em>No book with title <h3>'+ userInput+'</h3> exists!</h3></b></em>';
+            }else{
+              
+            for (result of results) {
+              count++;
+            
+              
+            divEl.innerHTML += '<h3>result : '+count+'</h3><ul><li>Titlie : ' + result.title + '</li><li>Author : ' + result.author + '</li><li>Genre : ' + result.genre + '</li><li>Price : ' + result.price + '</li></ul>';
+          }
+            }
+          
+          
         }
         };
-        xhttp.send();
+      }
       })
     }
 
@@ -220,7 +235,7 @@
       var genre = document.getElementById('genre').value;
       var price = document.getElementById('price').value;
       var response;
-      console.log(author, title, genre, price);
+      
       var url = window.location + "books/" + author + "/" + title + "/" + genre + "/" + price;
 
       if (author == '' || title == '' || price == '') {
@@ -256,65 +271,12 @@
       resetAdd();
 
     }
-    function showAddForm() {
-      document.getElementById('addBookel').style.display = "none";
-      document.getElementById('addBookForm').style.display = "block";
-      document.getElementById('findBookel').style.display = "none";
-      document.getElementById('h1').style.display = "none";
-      document.getElementById('showBooks-btn1').style.display = "none";
-    }
-    function showFindForm() {
-      document.getElementById('addBookel').style.display = "none";
-      document.getElementById('findBookel').style.display = "none";
-      document.getElementById('findBookForm').style.display = "block";
-      document.getElementById('h1').style.display = "none";
-      document.getElementById('showBooks-btn1').style.display = "none";
-    }
-
-    function backToMain() {
-      document.getElementById('addBookel').style.display = "block";
-      document.getElementById('findBookel').style.display = "block";
-      document.getElementById('findBookel').style.textAlign = "center";
-      document.getElementById('findBookForm').style.display = "none";
-      document.getElementById('addBookForm').style.display = "none";
-      document.getElementById('bookAddResult').style.display = "none";
-      document.getElementById('h1').style.display = "block";
-      document.getElementById('showBooks-btn').style.display = "none";
-      document.getElementById('showBooks-btn1').style.display = "block";
-      document.getElementById('showBookForm').style.display = "none";
-    }
-
+  
     function resetAdd() {
       document.getElementById('author').value = '';
       document.getElementById('title').value = '';
       document.getElementById('genre').value = '';
       document.getElementById('price').value = '';
-    }
-    function resetFind() {
-      document.getElementById('findBook').value = '';
-      document.getElementById('bookByTitle').value = '';
-
-    }
-
-
-    function showAllBooks1() {
-      document.getElementById('showBookForm').style.display = "block";
-      document.getElementById('addBookel').style.display = "none";
-      document.getElementById('findBookel').style.display = "none";
-      document.getElementById('showBooks-btn1').style.display = "none";
-      document.getElementById('showBooks-btn').style.display = "center";
-      document.getElementById('h1').style.display = "none";
-
-
-    }
-
-    function showdeleteBoookForm(){
-      document.getElementById('deleteBoookForm').style.display = "block";
-      document.getElementById('addBookel').style.display = "none";
-      document.getElementById('findBookel').style.display = "none";
-      document.getElementById('showBooks-btn1').style.display = "none";
-      document.getElementById('h1').style.display = "none";
-
     }
   </script>
 </body>

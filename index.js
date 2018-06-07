@@ -10,9 +10,7 @@ const app = express();
 app.use(express.static('./'));
 
 app.use(bodyParser.urlencoded({extended: true}));
-//app.use(express.json());
-//app.use(express.urlencoded());
-//app.use(app.router);
+
 
 const conn = mysql.createConnection({
     host: '35.204.206.195',
