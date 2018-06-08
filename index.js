@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(express.static('./'));
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 const conn = mysql.createConnection({
@@ -22,7 +22,7 @@ const conn = mysql.createConnection({
 
 conn.connect();
 
-//dwse ola ta vivlia
+//All books
 app.get('/books', function (req, res) {
 
     let sql = "SELECT * FROM books";
@@ -34,6 +34,7 @@ app.get('/books', function (req, res) {
 
 })
 
+//Find book by title (even if the input is a single letter it finds all books with that letter)
 app.get('/books/:title', function (req, res) {
 
     let title = req.params.title;
@@ -46,6 +47,7 @@ app.get('/books/:title', function (req, res) {
 
 })
 
+//Create a new book
 app.post('/books/:author/:title/:genre/:price', function (req, res) {
 
     let author = req.params.author;
@@ -54,18 +56,19 @@ app.post('/books/:author/:title/:genre/:price', function (req, res) {
     let price = req.params.price;
 
     let sql = "INSERT INTO books (author,title,genre,price) VALUES(?,?,?,?)";
-    conn.query(sql, [author, title,genre, price], function (err, result, fields) {
+    conn.query(sql, [author, title, genre, price], function (err, result, fields) {
         if (err) throw err;
         res.json(result);
 
     })
 })
 
+//Delete book by title
 app.post('/books/:title', function (req, res) {
 
 
     let sql = "DELETE FROM books WHERE title=?";
-    conn.query(sql, [ req.params.title], function (err, result, fields) {
+    conn.query(sql, [req.params.title], function (err, result, fields) {
         if (err) throw err;
         res.json(result);
 
