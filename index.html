@@ -154,7 +154,7 @@
 
         let xhttp = new XMLHttpRequest();
         let sendTitle = JSON.stringify(userInput);
-        let url = "http://localhost:3000/books/" + userInput;
+        let url = window.location + "books/" + userInput;
         xhttp.open("POST", url, true);
         xhttp.send(sendTitle);
         xhttp.onreadystatechange = function () {
@@ -164,7 +164,7 @@
             divEl.innerHTML = '<h3><b><em>If the book with title <h3>' + userInput + '</h3> exists is deleted....You can check by pressing the Show all books button.</b></em></h3>';
           }
         };
-        xhttp.send();
+        xhttp.send(sendTitle);
       })
     }
     function showAllBooks() {
@@ -210,7 +210,7 @@
         var userInput = document.getElementById('findBook').value;
 
         let xhttp = new XMLHttpRequest();
-        let url = "http://localhost:3000/books/" + userInput;
+        let url = window.location + "books/" + userInput;
         xhttp.open("GET", url, true);
         xhttp.send();
         xhttp.onreadystatechange = function () {
