@@ -19,6 +19,10 @@
 
     }
 
+    ul {
+      list-style-type: none;
+    }
+
     .button {
       text-align: center;
       color: rgb(139, 83, 83);
@@ -179,7 +183,7 @@
             let results = JSON.parse(xhttp.responseText);
             let divEl = document.getElementById('showBooks');
             let count = 0;
-            if (divEl.textContent == '') {
+            if (divEl.textContent == '') {//if the diEl is empty then print the results
 
 
               for (result of results) {
@@ -189,7 +193,7 @@
 
               }
 
-            } else {
+            } else {//else clear the div and then print the results
 
               divEl.textContent = '';
               for (result of results) {
@@ -218,11 +222,11 @@
             let results = JSON.parse(xhttp.responseText);
             let divEl = document.getElementById('showResults');
             let count = 0;
-            if (divEl.textContent == '') {
+            if (divEl.textContent == '') {//if the diEl is empty then print the results
 
-              if (results.length == 0) {
+              if (results.length == 0) {//if the result array is empty [] then the book dosen't exist
                 divEl.innerHTML = '<h3><b><em>No book with title <h3>' + userInput + '</h3> exists!</h3></b></em>';
-              } else {
+              } else {//else  print all the books with that title
 
                 for (result of results) {
                   count++;
@@ -231,7 +235,7 @@
                   divEl.innerHTML += '<h3>result : ' + count + '</h3><ul><li>Titlie : ' + result.title + '</li><li>Author : ' + result.author + '</li><li>Genre : ' + result.genre + '</li><li>Price : ' + result.price + '</li></ul>';
                 }
               }
-            } else {
+            } else {//else clear the div and then print the results
 
               divEl.textContent = ''
               if (results.length == 0) {
@@ -280,7 +284,6 @@
       var book = { 'author': author, 'title': title, 'genre': genre, 'price': price };
       let newBook = JSON.stringify(book);
 
-
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.open("POST", url, true);
       xmlhttp.send(newBook);
@@ -296,7 +299,7 @@
       resetAdd();
 
     }
-
+  //resete all the input forms
     function resetAdd() {
       document.getElementById('author').value = '';
       document.getElementById('title').value = '';
@@ -305,4 +308,5 @@
     }
   </script>
 </body>
+
 </html>
